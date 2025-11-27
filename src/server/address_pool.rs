@@ -58,6 +58,19 @@ impl AddressPool {
         self.used_addresses.insert(self.network.network());
         self.used_addresses.insert(self.network.addr());
         self.used_addresses.insert(self.network.broadcast());
+
+        match self.network {
+            IpNet::V4(net) => {
+                let base  net.network();
+                let mut octets = base.octets();
+
+                for offset in 2..=5 {
+                    let ip = u32::from_be_bytes(octets).checked_add(offset).unwrap();
+                    let addr = std::net::Ipv4Addr::from(ip);
+                    self.used_addresses.insert(IpAddr::V4(addr));
+                }
+            }
+        }
     }
 }
 
