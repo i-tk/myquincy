@@ -64,7 +64,7 @@ impl AddressPool {
             IpNet::V4(net) => {
                 let base = net.network();
                 let mut octets = base.octets();
-        
+            
                 for offset in 2..=5 {
                     let ip = u32::from_be_bytes(octets).checked_add(offset).unwrap();
                     let addr = Ipv4Addr::from(ip);
@@ -75,7 +75,6 @@ impl AddressPool {
                 let base = net.network();
                 let segments = base.segments(); // u16 の配列
                 for i in 1..=4 {
-                    // 末尾のセグメントだけ簡易的に +i
                     let mut new_segments = segments;
                     new_segments[7] = new_segments[7].checked_add(i).unwrap();
                     let addr = Ipv6Addr::from(new_segments);
