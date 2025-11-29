@@ -62,7 +62,7 @@ impl AddressPool {
         //change
         match self.network {
             IpNet::V4(net) => {
-                let base　net.network();
+                let base net.network();
                 let mut octets = base.octets();
 
                 for offset in 2..=5 {
