@@ -64,7 +64,7 @@ impl AddressPool {
         match self.network {
             IpNet::V4(net) => {
                 let base = net.network();
-                let mut octets = base.octets();
+                let octets = base.octets();
 
                 for offset in 2..=5 {
                     let ip = u32::from_be_bytes(octets).checked_add(offset).unwrap();
