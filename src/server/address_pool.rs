@@ -1,6 +1,6 @@
 use dashmap::DashSet;
 use ipnet::{IpAddrRange, IpNet, Ipv4AddrRange, Ipv6AddrRange};
-use std::net::IpAddr;
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// Represents a pool of addresses from which addresses can be requested and released.
 pub struct AddressPool {
@@ -52,6 +52,7 @@ impl AddressPool {
         self.used_addresses.remove(address);
     }
 
+    /// change
     /// Resets the address pool by releasing all addresses.
     pub fn reset(&self) {
         self.used_addresses.clear();
