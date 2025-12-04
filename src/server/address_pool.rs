@@ -97,7 +97,7 @@ mod tests {
         let pool = AddressPool::new(IpNet::V4(
             Ipv4Net::with_netmask(
                 Ipv4Addr::new(10, 0, 0, 1),
-                Ipv4Addr::new(255, 255, 255, 252),
+                Ipv4Addr::new(255, 255, 255, 240),
             )
             .unwrap(),
         ));
