@@ -106,7 +106,7 @@ pub struct ClientAuthenticationConfig {
     /// A list of trusted certificates
     pub trusted_certificates: Vec<PathBuf>,
     /// The requested IP address for the client
-    pub requested_ip: Option<IpAddr>,
+    pub requested_ip: Option<IpNet>,
 }
 
 /// QUIC connection configuration
