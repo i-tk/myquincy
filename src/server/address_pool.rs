@@ -53,11 +53,14 @@ impl AddressPool {
     }
 
     /// Reserves the specified IP if it is available and valid
-    pub fn reserve_if_available(&self, ip: IpAddr) -> Option<IpNet> {
+    pub fn reserve_if_available(&self, net: IpNet) -> Option<IpNet> {
+        let ip = net.addr();
+
         // check if ip belongs to pool
         if !self.network.contains(&ip) {
             return None;
         }
+
         // check if already used
         if self.used_addresses.contains(&ip) {
             return None;
@@ -66,7 +69,8 @@ impl AddressPool {
         // reserve
         self.used_addresses.insert(ip);
 
-        Some(IpNet::with_netmask(ip, self.network.netmask()).expect("valid netmask expected"))
+        // 必要なら元のprefixで返す
+        Some(net)
     }
 
     /// change

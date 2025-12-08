@@ -84,7 +84,7 @@ impl ServerAuthenticator for UsersFileServerAuthenticator {
             .await?;
 
         let assigned_ip = if let Some(req_net) = payload.requested_ip {
-            if let Some(reserved) = address_pool.reserve_if_available(req_net.addr()) {
+            if let Some(reserved) = address_pool.reserve_if_available(req_net) {
                 reserved
             } else {
                 address_pool
