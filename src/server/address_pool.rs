@@ -66,10 +66,7 @@ impl AddressPool {
         // reserve
         self.used_addresses.insert(ip);
 
-        Some(
-            IpNet::with_netmask(ip, self.network.netmask())
-                .expect("valid netmask expected"),
-        )
+        Some(IpNet::with_netmask(ip, self.network.netmask()).expect("valid netmask expected"))
     }
 
     /// change

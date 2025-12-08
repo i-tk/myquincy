@@ -90,7 +90,7 @@ pub struct ClientConfig {
     /// Logging configuration
     pub log: LogConfig,
     // fixxed IP
-    pub requested_ip: Option<IpAddr>
+    pub requested_ip: Option<IpAddr>,
 }
 
 /// Quincy client-side authentication configuration

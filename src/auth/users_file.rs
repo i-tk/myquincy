@@ -1,8 +1,8 @@
 use std::{
     fs::{self, File},
     io::{BufRead, BufReader, BufWriter, Write},
-    path::Path,
     net::IpAddr,
+    path::Path,
 };
 
 use anyhow::{anyhow, Context, Result};
@@ -34,7 +34,7 @@ pub struct UsersFileClientAuthenticator {
 pub struct UsersFilePayload {
     pub username: String,
     pub password: String,
-    pub requested_ip : Option<IpNet>,
+    pub requested_ip: Option<IpNet>,
 }
 
 /// Represents a user database
@@ -88,11 +88,13 @@ impl ServerAuthenticator for UsersFileServerAuthenticator {
             if let Some(reserved) = address_pool.reserve_if_available(req_net.addr()) {
                 reserved
             } else {
-                address_pool.next_available_address()
+                address_pool
+                    .next_available_address()
                     .ok_or(anyhow!("no available addresses"))?
             }
         } else {
-            address_pool.next_available_address()
+            address_pool
+                .next_available_address()
                 .ok_or(anyhow!("no available addresses"))?
         };
 
@@ -108,7 +110,6 @@ impl ClientAuthenticator for UsersFileClientAuthenticator {
             password: self.password.clone(),
             requested_ip: self.requested_ip.map(IpNet::from),
         };
-
 
         Ok(serde_json::to_value(payload)?)
     }
