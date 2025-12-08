@@ -52,6 +52,26 @@ impl AddressPool {
         self.used_addresses.remove(address);
     }
 
+    /// Reserves the specified IP if it is available and valid
+    pub fn reserve_if_available(&self, ip: IpAddr) -> Option<IpNet> {
+        // check if ip belongs to pool
+        if !self.network.contains(&ip) {
+            return None;
+        }
+        // check if already used
+        if self.used_addresses.contains(&ip) {
+            return None;
+        }
+
+        // reserve
+        self.used_addresses.insert(ip);
+
+        Some(
+            IpNet::with_netmask(ip, self.network.netmask())
+                .expect("valid netmask expected"),
+        )
+    }
+
     /// change
     /// Resets the address pool by releasing all addresses.
     pub fn reset(&self) {

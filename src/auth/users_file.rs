@@ -2,6 +2,7 @@ use std::{
     fs::{self, File},
     io::{BufRead, BufReader, BufWriter, Write},
     path::Path,
+    net::IpAddr,
 };
 
 use anyhow::{anyhow, Context, Result};
@@ -26,12 +27,14 @@ pub struct UsersFileServerAuthenticator {
 pub struct UsersFileClientAuthenticator {
     username: String,
     password: String,
+    requested_ip: Option<IpAddr>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UsersFilePayload {
-    username: String,
-    password: String,
+    pub username: String,
+    pub password: String,
+    pub requested_ip : Option<IpNet>,
 }
 
 /// Represents a user database
@@ -62,6 +65,7 @@ impl UsersFileClientAuthenticator {
         Self {
             username: config.username.clone(),
             password: config.password.clone(),
+            requested_ip: config.requested_ip,
         }
     }
 }
@@ -80,12 +84,19 @@ impl ServerAuthenticator for UsersFileServerAuthenticator {
             .authenticate(&payload.username, payload.password)
             .await?;
 
-        Ok((
-            payload.username,
-            address_pool
-                .next_available_address()
-                .ok_or(anyhow!("no available address"))?,
-        ))
+        let assigned_ip = if let Some(req_net) = payload.requested_ip {
+            if let Some(reserved) = address_pool.reserve_if_available(req_net.addr()) {
+                reserved
+            } else {
+                address_pool.next_available_address()
+                    .ok_or(anyhow!("no available addresses"))?
+            }
+        } else {
+            address_pool.next_available_address()
+                .ok_or(anyhow!("no available addresses"))?
+        };
+
+        Ok((payload.username, assigned_ip))
     }
 }
 
@@ -95,7 +106,9 @@ impl ClientAuthenticator for UsersFileClientAuthenticator {
         let payload = UsersFilePayload {
             username: self.username.clone(),
             password: self.password.clone(),
+            requested_ip: self.requested_ip.map(IpNet::from),
         };
+
 
         Ok(serde_json::to_value(payload)?)
     }

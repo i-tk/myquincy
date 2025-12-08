@@ -89,6 +89,8 @@ pub struct ClientConfig {
     pub crypto: CryptoConfig,
     /// Logging configuration
     pub log: LogConfig,
+    // fixxed IP
+    pub requested_ip: Option<IpAddr>
 }
 
 /// Quincy client-side authentication configuration
@@ -103,6 +105,8 @@ pub struct ClientAuthenticationConfig {
     pub password: String,
     /// A list of trusted certificates
     pub trusted_certificates: Vec<PathBuf>,
+    /// The requested IP address for the client
+    pub requested_ip: Option<IpAddr>,
 }
 
 /// QUIC connection configuration
