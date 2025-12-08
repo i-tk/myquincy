@@ -1,7 +1,6 @@
 use std::{
     fs::{self, File},
     io::{BufRead, BufReader, BufWriter, Write},
-    net::IpAddr,
     path::Path,
 };
 
@@ -27,7 +26,7 @@ pub struct UsersFileServerAuthenticator {
 pub struct UsersFileClientAuthenticator {
     username: String,
     password: String,
-    requested_ip: Option<IpAddr>,
+    requested_ip: Option<IpNet>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -108,7 +107,7 @@ impl ClientAuthenticator for UsersFileClientAuthenticator {
         let payload = UsersFilePayload {
             username: self.username.clone(),
             password: self.password.clone(),
-            requested_ip: self.requested_ip.map(IpNet::from),
+            requested_ip: self.requested_ip,
         };
 
         Ok(serde_json::to_value(payload)?)
