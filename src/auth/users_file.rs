@@ -11,6 +11,7 @@ use dashmap::DashMap;
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use tracing::debug;
 
 use crate::{
     config::{ClientAuthenticationConfig, ServerAuthenticationConfig},
@@ -76,14 +77,20 @@ impl ServerAuthenticator for UsersFileServerAuthenticator {
         address_pool: &AddressPool,
         authentication_payload: Value,
     ) -> Result<(String, IpNet)> {
+        debug!("authenticate_user: start");
+
         let payload: UsersFilePayload = serde_json::from_value(authentication_payload)
             .context("failed to parse UsersFilePayload")?;
+
+        debug!("authenticate_user: payload = {:?}", payload);
 
         self.user_database
             .authenticate(&payload.username, payload.password)
             .await?;
 
         let assigned_ip = if let Some(req_net) = payload.requested_ip {
+            debug!("payload.requested_ip exists: {:?}", req_net);
+
             if let Some(reserved) = address_pool.reserve_if_available(req_net) {
                 reserved
             } else {
