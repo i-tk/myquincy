@@ -21,7 +21,7 @@ pub struct Args {
 #[tokio::main]
 async fn main() {
     // Enable default tracing to log errors before the configuration is loaded.
-    let _logger = tracing::subscriber::set_default(log_subscriber("info"));
+    let _logger = tracing::subscriber::set_default(log_subscriber("trace"));
 
     match run_client().await {
         Ok(_) => {}
