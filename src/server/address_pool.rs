@@ -1,6 +1,6 @@
 use dashmap::DashSet;
 use ipnet::{IpAddrRange, IpNet, Ipv4AddrRange, Ipv6AddrRange};
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+use std::net::IpAddr;
 
 /// Represents a pool of addresses from which addresses can be requested and released.
 pub struct AddressPool {
