@@ -80,30 +80,6 @@ impl AddressPool {
         self.used_addresses.insert(self.network.network());
         self.used_addresses.insert(self.network.addr());
         self.used_addresses.insert(self.network.broadcast());
-
-        // change
-        match self.network {
-            IpNet::V4(net) => {
-                let base = net.network();
-                let octets = base.octets();
-
-                for offset in 2..=5 {
-                    let ip = u32::from_be_bytes(octets).checked_add(offset).unwrap();
-                    let addr = Ipv4Addr::from(ip);
-                    self.used_addresses.insert(IpAddr::V4(addr));
-                }
-            }
-            IpNet::V6(net) => {
-                let base = net.network();
-                let segments = base.segments(); // u16 の配列
-                for i in 1..=4 {
-                    let mut new_segments = segments;
-                    new_segments[7] = new_segments[7].checked_add(i).unwrap();
-                    let addr = Ipv6Addr::from(new_segments);
-                    self.used_addresses.insert(IpAddr::V6(addr));
-                }
-            }
-        }
     }
 }
 
@@ -120,6 +96,7 @@ mod tests {
                 Ipv4Addr::new(10, 0, 0, 1),
                 Ipv4Addr::new(255, 255, 255, 240),
             )
+
             .unwrap(),
         ));
 
